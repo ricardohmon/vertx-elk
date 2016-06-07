@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.vertx.examples</groupId>
+  <artifactId>vertx-elk</artifactId>
+  <version>1.0</version>
+
+  <properties>
+    <!-- the main class -->
+    <exec.mainClass>com.test.vertx.ApplicationLauncher</exec.mainClass>
+    <vertex.version>3.1.0</vertex.version>
+    <slf4j.version>1.7.21</slf4j.version>
+    <log4j2.version>2.5</log4j2.version>
+    <disruptor.version>3.3.4</disruptor.version>
+    <!-- Docker properties -->
+    <docker.group.name>vertx-examples</docker.group.name>
+    <docker.image>${docker.group.name}/${project.artifactId}:${project.version}</docker.image>
+
+    <discovery.service-type>unknown</discovery.service-type>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+      <version>${vertex.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>2.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j2.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j2.version}</version>
+    </dependency>
+    <!-- 
+      Logstash JSON Layout for Log4J2 built and published locally
+      See: https://github.com/majikthys/log4j2-logstash-jsonevent-layout
+     -->
+    <dependency>
+        <groupId>net.logstash.log4j2</groupId>
+        <artifactId>log4j2-logstash-jsonevent-layout-master</artifactId>
+        <version>4.1.0</version>
+    </dependency>
+    <!-- Make Log4J2 Logging Asynchronous
+         See: https://logging.apache.org/log4j/2.x/manual/async.html 
+      -->
+    <dependency>
+        <groupId>com.lmax</groupId>
+        <artifactId>disruptor</artifactId>
+        <version>${disruptor.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+
+    <pluginManagement>
+      <plugins>
+        <!-- We specify the Maven compiler plugin as we need to set it to Java 1.8 -->
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <!--
+    You only need the part below if you want to build your application into a fat executable jar.
+    This is a jar that contains all the dependencies required to run it, so you can just run it with
+    java -jar
+    -->
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <manifestEntries>
+                    <Main-Class>${exec.mainClass}</Main-Class>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+              <artifactSet>
+              </artifactSet>
+              <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Docker Plugin -->
+
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>0.14.1</version>
+          <configuration>
+            <verbose>true</verbose>
+            <images>
+              <image>
+                <name>${docker.image}</name>
+                <build>
+                  <from>java:8</from>
+                  <tags>
+                    <tag>latest</tag>
+                    <tag>${project.version}</tag>
+                  </tags>
+                  <workdir>/opt</workdir>
+                  <entryPoint>
+                    <exec>
+                      <arg>java</arg>
+                      <arg>-jar</arg>
+                      <arg>${project.artifactId}-${project.version}-fat.jar</arg>
+                      <arg>-e</arg>
+                      <arg>$LOG_DELEGATE</arg>
+                      <arg>$LOG_CONTEXT</arg>
+                      <arg>-cp</arg>
+                      <arg>.</arg>
+                    </exec>
+                  </entryPoint>
+                  <runCmds>
+                    <runcmd>chmod -R 777 /opt</runcmd>
+                  </runCmds>
+                  <assembly>
+                    <basedir>/</basedir>
+                    <inline>
+                      <files>
+                        <file>
+                          <source>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</source>
+                          <outputDirectory>/opt</outputDirectory>
+                          <fileMode>0755</fileMode>
+                        </file>
+                        <file>
+                          <source>./config/filebeat.yml</source>
+                          <outputDirectory>/opt</outputDirectory>
+                          <fileMode>0755</fileMode>
+                        </file>
+                      </files>
+                    </inline>
+                  </assembly>
+                  <env>
+                    <SERVICE_TYPE>${discovery.service-type}</SERVICE_TYPE>
+                    <LOG_DELEGATE>-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory</LOG_DELEGATE>
+                    <LOG_CONTEXT>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</LOG_CONTEXT>
+                  </env>
+                </build>
+                <run>
+                  <ports>
+                  </ports>
+                </run>
+              </image>
+            </images>
+          </configuration>
+        </plugin>
+
+        <!-- Maven Exec -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>java</executable>
+          <systemProperties>
+            <!-- Declare logger delegate factory class for SLF4J -->
+            <systemProperty>
+              <key>vertx.logger-delegate-factory-class-name</key>
+              <value>io.vertx.core.logging.SLF4JLogDelegateFactory</value>
+            </systemProperty>
+            <!-- Configure all loggers asynchronous
+                 See: https://logging.apache.org/log4j/2.x/manual/async.html 
+             -->
+            <systemProperty>
+              <key>Log4jContextSelector</key>
+              <value>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</value>
+            </systemProperty>
+          </systemProperties>
+          <arguments>
+            <argument>-jar</argument>
+            <argument>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,28 @@
+filebeat: 
+  prospectors: 
+    - 
+      document_type: vertx_app
+      paths: 
+        - /var/log/seachlog.log
+      multiline:
+        pattern: "^[0-9]+"
+        negate: true
+        match: after
+    - 
+      document_type: vertx_core
+      paths: 
+        - /var/log/vertx.log
+      multiline:
+        pattern: "^[0-9]+"
+        negate: true
+        match: after
+output: 
+  logstash: 
+    enabled: true
+    hosts: 
+      - elk:5044
+    timeout: 15
+    tls:
+      insecure: true
+      certificate_authoritites:
+        - /etc/pki/tls/certs/logstash-beats.crt

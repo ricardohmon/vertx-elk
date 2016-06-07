@@ -1,0 +1,3 @@
+# Pattern to match our Log4j format
+LOGGER (?:[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*
+LOG4J %{TIMESTAMP_ISO8601:timestamp_string} %{LOGLEVEL:log_level} %{LOGGER:logger_name}: - %{JAVALOGMESSAGE:log_message}
