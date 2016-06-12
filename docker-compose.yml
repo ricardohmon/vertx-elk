@@ -7,5 +7,21 @@ services:
       - "9200:9200"
       - "5044:5044"
       - "5000:5000"
-  app:
-    build: app/
+  elk-setup:
+    build: elk-setup/
+  quote-generator:
+    image: vertx-microservice-workshop/quote-generator
+    ports:
+      - "8081:8080"
+  dashboard:
+    image: vertx-microservice-workshop/trader-dashboard
+    ports:
+      - "8083:8080"
+  portfolio:
+    image: vertx-microservice-workshop/portfolio-service
+  traders:
+    image: vertx-microservice-workshop/compulsive-traders
+  audit:
+    image: vertx-microservice-workshop/audit-service
+    ports:
+      - "8082:8080"
