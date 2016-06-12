@@ -2,7 +2,7 @@
 <Configuration>
 	<Appenders>
 		<RollingFile name="app_file" append="true" fileName="/var/log/seachlog.log" filePattern="/var/log/vertx/$${date:yyyy-MM}/seachlog-%d{MM-dd-yyyy}-%i.log.gz">
-		   <PatternLayout pattern="%d{ISO8601} %-5p %c{1}:%L - %m%n" />
+		   <PatternLayout pattern="%d{ISO8601} %-5p %c:%L - %m%n" />
 		   <Policies>
   				<OnStartupTriggeringPolicy />
   				<SizeBasedTriggeringPolicy size="5MB" />
@@ -10,7 +10,7 @@
 			</Policies>
 		</RollingFile>
 		<RollingFile name="vertx_file" append="true" fileName="/var/log/vertx.log" filePattern="/var/log/vertx/$${date:yyyy-MM}/vertx-%d{MM-dd-yyyy}-%i.log.gz">
-		   <PatternLayout pattern="%d{ISO8601} %-5p %c{1}:%L - %m%n" />
+		   <PatternLayout pattern="%d{ISO8601} %-5p %c:%L - %m%n" />
 		   <Policies>
   				<OnStartupTriggeringPolicy />
   				<SizeBasedTriggeringPolicy size="5MB" />
@@ -19,7 +19,7 @@
 		</RollingFile>
 	    <Console name="STDOUT" target="SYSTEM_OUT">
 	      <!-- <LogStashJSONLayout/> -->
-	      <PatternLayout pattern="%d{ISO8601} %-5p %c{1}:%L - %m%n" />
+	      <PatternLayout pattern="%d{ISO8601} %-5p %c:%L - %m%n" />
 	    </Console>
 	</Appenders>
 
