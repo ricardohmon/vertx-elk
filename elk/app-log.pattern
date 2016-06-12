@@ -1,5 +1,5 @@
 # Pattern to match our Log4j format
 SPACING (?:[\s]+)
 LOGGER (?:[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*
-LINE (INT)?
+LINE %{INT}?
 LOG4J %{TIMESTAMP_ISO8601:timestamp_string} %{LOGLEVEL:log_level}%{SPACING}%{LOGGER:logger_name}:%{LINE:loc_line} - %{JAVALOGMESSAGE:log_message}
