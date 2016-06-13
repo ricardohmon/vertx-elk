@@ -6,11 +6,11 @@ a Docker [image](https://hub.docker.com/r/sebp/elk/) containing a setup of the E
 - Clone or download this repository.
 - Separately, clone or download the Microservices workshop [repository](https://github.com/cescoffier/vertx-microservices-workshop).
 
-# Build example
-The Docker images belonging to the Vert.x Microservices workshop need to be built separately to this project, then this project can be launched.
+# Building the example
+The Docker images belonging to the Vert.x Microservices workshop need to be built separately to this project before this project can be launched.
 
-## Build Vert.x Microservices workshop Docker images.
-Build the root project and the Trader Dashboard, then each of the modules contained in the solution folder, by issuing the following commands:
+## Building the Vert.x Microservices workshop Docker images.
+Build the root project and the Trader Dashboard followed by each of the modules contained in the solution folder. Issue the following commands to achieve this:
 
 ```
 mvn clean install
@@ -27,7 +27,7 @@ mvn package docker:build
 
 ```
 
-# Run example
+# Running the example
 
 After building the previous images, build and run the example with the following command:
 
