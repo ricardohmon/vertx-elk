@@ -4,7 +4,7 @@ a Docker [image](https://hub.docker.com/r/sebp/elk/) containing a setup of the E
 
 # Installation
 - Clone or download this repository.
-- Separately, clone or download the Microservices workshop [repository](https://github.com/cescoffier/vertx-microservices-workshop).
+- Separately, obtain the source code of the [branch](https://github.com/ricardohmon/vertx-microservices-workshop/tree/elk-demo) of the Microservices workshop adapted for this example.
 
 # Building the example
 The Docker images belonging to the Vert.x Microservices workshop need to be built separately to this project before this project can be launched.
