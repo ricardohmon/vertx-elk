@@ -94,7 +94,7 @@ do
     name=`basename $file .json`
     echo "Loading search $name:"
     $CURL -XPUT $ELASTICSEARCH/$KIBANA_INDEX/search/$name \
-        -d @$file || exit 1
+        -d @$file > /dev/null || exit 1
     echo
 done
 
@@ -103,7 +103,7 @@ do
     name=`basename $file .json`
     echo "Loading visualization $name:"
     $CURL -XPUT $ELASTICSEARCH/$KIBANA_INDEX/visualization/$name \
-        -d @$file || exit 1
+        -d @$file > /dev/null || exit 1
     echo
 done
 
@@ -112,7 +112,7 @@ do
     name=`basename $file .json`
     echo "Loading dashboard $name:"
     $CURL -XPUT $ELASTICSEARCH/$KIBANA_INDEX/dashboard/$name \
-        -d @$file || exit 1
+        -d @$file > /dev/null || exit 1
     echo
 done
 
@@ -122,7 +122,7 @@ do
     echo "Loading index pattern $name:"
 
     $CURL -XPUT $ELASTICSEARCH/$KIBANA_INDEX/index-pattern/$name \
-        -d @$file || exit 1
+        -d @$file > /dev/null || exit 1
     echo
 done
 

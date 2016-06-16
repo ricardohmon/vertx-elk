@@ -28,7 +28,7 @@
           "type": "long",
           "doc_values": "true"
         },
-        "type": { "type": "string", "index": "not_analyzed" },
+        "type": { "type": "string", "index": "analyzed" },
         "host": { "type": "string", "index": "not_analyzed" },
         "log_level": { "type": "string", "index": "not_analyzed" },
         "logger_name": { "type": "string", "index": "analyzed" },

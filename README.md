@@ -1,4 +1,4 @@
-# Vert.x logging using ELK stack
+# Vert.x logging featuring ELK stack
 This demo builds on the Vert.x Microservices [workshop](http://vertx-lab.dynamis-technologies.com/) and extends
 a Docker [image](https://hub.docker.com/r/sebp/elk/) containing a setup of the ELK stack to show a common DevOps usage scenario of log aggregation powered by Logstash, Elasticsearch, and Kibana, conjunctively,
 
