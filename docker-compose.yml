@@ -1,27 +1,39 @@
-version: '2'
-services:
-  elk:
-    build: elk/
-    ports:
-      - "5601:5601"
-      - "9200:9200"
-      - "5044:5044"
-      - "5000:5000"
-  elk-setup:
-    build: elk-setup/
-  quote-generator:
-    image: vertx-microservice-workshop/quote-generator
-    ports:
-      - "8081:8080"
-  dashboard:
-    image: vertx-microservice-workshop/trader-dashboard
-    ports:
-      - "8083:8080"
-  portfolio:
-    image: vertx-microservice-workshop/portfolio-service
-  traders:
-    image: vertx-microservice-workshop/compulsive-traders
-  audit:
-    image: vertx-microservice-workshop/audit-service
-    ports:
-      - "8082:8080"
+elk:
+  build: elk/
+  ports:
+    - "5601:5601"
+    - "9200:9200"
+    - "5044:5044"
+    - "5000:5000"
+elk-setup:
+  build: elk-setup/
+  links:
+    - elk
+quote-generator:
+  image: vertx-microservice-workshop/quote-generator
+  ports:
+    - "8081:8080"
+  links:
+    - elk
+dashboard:
+  image: vertx-microservice-workshop/trader-dashboard
+  ports:
+    - "8083:8080"
+  links:
+    - audit:AUDIT
+    - elk
+portfolio:
+  image: vertx-microservice-workshop/portfolio-service
+  links:
+    - quote-generator:CONSOLIDATION
+    - elk
+traders:
+  image: vertx-microservice-workshop/compulsive-traders
+  links:
+    - elk
+audit:
+  image: vertx-microservice-workshop/audit-service
+  ports:
+    - "8082:8080"
+  links:
+    - elk
