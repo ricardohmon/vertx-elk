@@ -37,3 +37,4 @@ audit:
     - "8082:8080"
   links:
     - elk
+    - portfolio:PORTFOLIO
