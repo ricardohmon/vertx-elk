@@ -30,6 +30,8 @@ portfolio:
 traders:
   image: vertx-microservice-workshop/compulsive-traders
   links:
+    - quote-generator:CONSOLIDATION
+    - portfolio:PORTFOLIO
     - elk
 audit:
   image: vertx-microservice-workshop/audit-service
