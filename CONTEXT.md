@@ -1,0 +1,4 @@
+## Project context
+This work was realized in context of [Google Summer of Code](https://summerofcode.withgoogle.com/about/), a program that aims to bring students closer to open source organizations in order to help them to gain exposure to software development practices and real-world challenges. Specifically, this is a contribution to the Vert.x organization within the project titled "[DevOps tooling for Vert.x applications](https://summerofcode.withgoogle.com/projects/#4858492141699072)", one of the projects participating in this year's edition of GSoC.
+
+The files contained in this repository are part of a demo and approach guideline with the topic "Centralized logging for Vert.x applications using the ELK stack", whose complete description will be available in the [blog section](http://vertx.io/blog/) of Vert.x website.
